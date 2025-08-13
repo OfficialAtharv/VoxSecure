@@ -1,0 +1,182 @@
+.login-page {
+  position: relative;
+  width: 100vw;
+  height: 88vh;
+  overflow: hidden;
+}
+
+.background-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  filter: brightness(0.4);
+}
+
+.fancy-title {
+  background: linear-gradient(90deg, #00e5ff, #8e2de2, #4a00e0);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  animation: flicker 3s infinite, text-glow 2s ease-in-out infinite alternate;
+}
+@keyframes text-glow {
+  from {
+    text-shadow: 0 0 5px #00e5ff, 0 0 10px #00e5ff, 0 0 15px #8e2de2;
+  }
+  to {
+    text-shadow: 0 0 10px #4a00e0, 0 0 20px #8e2de2, 0 0 30px #00e5ff;
+  }
+}
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 1;
+  }
+  20%, 22%, 24%, 55% {
+    opacity: 0.4;
+  }
+}
+
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 400px;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  color: #fff;
+}
+
+.login-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+}
+
+.input-icon {
+  margin-right: 10px;
+  color: #fff;
+}
+
+input {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #fff;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #4fc3f7;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #0288d1;
+}
+
+.register-link {
+  text-align: center;
+  margin-top: 15px;
+  color: #eee;
+}
+
+
+.passphrase-section {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.passphrase-label {
+  font-size: 0.95rem;
+  color: #ddd;
+  margin-bottom: 8px;
+}
+
+.passphrase-text {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #00e5ff;
+  text-shadow: 0 0 6px #00e5ff;
+}
+
+.audio-controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.audio-preview {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  color: #fff;
+}
+
+.audio-preview audio {
+  width: 100%;
+  margin-top: 5px;
+}
+.custom-audio-controls {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.custom-audio-controls button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #4fc3f7;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.custom-audio-controls button:hover {
+  background-color: #0288d1;
+}
+
+.audio-preview audio {
+  display: none; /* hide the native player completely */
+}
+
