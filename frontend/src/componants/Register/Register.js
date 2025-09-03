@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
-import '../Login/Login.css';
-import { FaUser } from 'react-icons/fa';
-import bgGif from '../../assets/bg.gif';
+import React, { useState, useRef } from "react";
+import "../Login/Login.css";
+import "./Register.css";
+import { FaUser } from "react-icons/fa";
+import bgGif from "../../assets/bg.gif";
 
 const Register = ({ theme }) => {
-  const [form, setForm] = useState({ email: '', name: '', mobile: '' });
+  const [form, setForm] = useState({ email: "", name: "", mobile: "" });
   const [audioURLs, setAudioURLs] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
@@ -13,12 +14,12 @@ const Register = ({ theme }) => {
   const passphrases = [
     "Voice is the key",
     "Unlock with your voice",
-    "Secure voice identity"
+    "Secure voice identity",
   ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const isFormValid = () => {
@@ -27,15 +28,15 @@ const Register = ({ theme }) => {
     const nameRegex = /^[a-zA-Z ]{2,}$/;
     const mobileRegex = /^[0-9]{10}$/;
     return (
-      emailRegex.test(email) &&
-      nameRegex.test(name) &&
-      mobileRegex.test(mobile)
+      emailRegex.test(email) && nameRegex.test(name) && mobileRegex.test(mobile)
     );
   };
 
   const startRecording = async () => {
     if (!isFormValid()) {
-      alert('Please fill out all fields with valid information before recording.');
+      alert(
+        "Please fill out all fields with valid information before recording."
+      );
       return;
     }
 
@@ -50,12 +51,12 @@ const Register = ({ theme }) => {
       };
 
       recorder.onstop = () => {
-        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
         const url = URL.createObjectURL(blob);
-        setAudioURLs(prev => {
+        setAudioURLs((prev) => {
           const updated = [...prev, url];
           if (updated.length === 3) {
-            alert('Audio recordings completed successfully!');
+            alert("Audio recordings completed successfully!");
           }
           return updated;
         });
@@ -66,7 +67,7 @@ const Register = ({ theme }) => {
       setMediaRecorder(recorder);
       setIsRecording(true);
     } catch (err) {
-      console.error('Microphone access denied:', err);
+      console.error("Microphone access denied:", err);
     }
   };
 
@@ -78,53 +79,58 @@ const Register = ({ theme }) => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!isFormValid() || audioURLs.length < 3) {
-    alert("Please complete all fields and record all 3 passphrases.");
-    return;
-  }
-
-  try {
-    const formData = new FormData();
-    formData.append("email", form.email);
-    formData.append("name", form.name);
-    formData.append("mobile", form.mobile);
-
-    // Append audio files
-    for (let i = 0; i < audioURLs.length; i++) {
-      const response = await fetch(audioURLs[i]);
-      const blob = await response.blob();
-      formData.append("recordings", blob, `recording_${i + 1}.webm`);
+    if (!isFormValid() || audioURLs.length < 3) {
+      alert("Please complete all fields and record all 3 passphrases.");
+      return;
     }
 
-    const res = await fetch("http://127.0.0.1:8000/register", {
-      method: "POST",
-      body: formData
-    });
+    try {
+      const formData = new FormData();
+      formData.append("email", form.email);
+      formData.append("name", form.name);
+      formData.append("mobile", form.mobile);
 
-    const data = await res.json();
+      // Append audio files
+      for (let i = 0; i < audioURLs.length; i++) {
+        const response = await fetch(audioURLs[i]);
+        const blob = await response.blob();
+        formData.append("recordings", blob, `recording_${i + 1}.webm`);
+      }
 
-    if (!res.ok) {
-      throw new Error(data.message || "Failed to register user");
+      const res = await fetch("http://127.0.0.1:8000/register", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to register user");
+      }
+
+      console.log("Server response:", data);
+      alert("Registration successful!");
+
+      // Reset form after successful submission
+      setForm({ email: "", name: "", mobile: "" });
+      setAudioURLs([]);
+    } catch (err) {
+      console.error("Error:", err);
+      alert("Error during registration. Please try again.");
     }
-
-    console.log("Server response:", data);
-    alert("Registration successful!");
-
-    // Reset form after successful submission
-    setForm({ email: "", name: "", mobile: "" });
-    setAudioURLs([]);
-  } catch (err) {
-    console.error("Error:", err);
-    alert("Error during registration. Please try again.");
-  }
-};
-
+  };
 
   return (
-    <div className={`login-page ${theme}`} style={{ overflowY: 'auto', maxHeight: '100vh' }}>
-      <div className="background-animation" style={{ backgroundImage: `url(${bgGif})` }} />
+    <div
+      className={`login-page ${theme}`}
+      style={{ overflowY: "auto", maxHeight: "100vh" }}
+    >
+      <div
+        className="background-animation"
+        style={{ backgroundImage: `url(${bgGif})` }}
+      />
       <div className="login-card">
         <h1 className="login-title fancy-title">VoxSecure</h1>
 
@@ -165,16 +171,26 @@ const Register = ({ theme }) => {
           <>
             <div className="passphrase-section">
               <p className="passphrase-label">
-                Please speak the following passphrase ({audioURLs.length + 1}/3):
+                Please speak the following passphrase ({audioURLs.length + 1}
+                /3):
               </p>
-              <p className="passphrase-text">"{passphrases[audioURLs.length]}"</p>
+              <p className="passphrase-text">
+                "{passphrases[audioURLs.length]}"
+              </p>
             </div>
-
             <div className="audio-controls">
-              <button className="login-btn" onClick={startRecording} disabled={isRecording || audioURLs.length >= 3}>
+              <button
+                className="login-btn"
+                onClick={startRecording}
+                disabled={isRecording || audioURLs.length >= 3}
+              >
                 Start Recording
               </button>
-              <button className="login-btn" onClick={stopRecording} disabled={!isRecording}>
+              <button
+                className="login-btn"
+                onClick={stopRecording}
+                disabled={!isRecording}
+              >
                 Stop Recording
               </button>
             </div>
@@ -183,7 +199,9 @@ const Register = ({ theme }) => {
 
         {audioURLs.length > 0 && (
           <div className="recording-previews">
-            <p style={{ fontSize: '14px', marginBottom: '8px' }}>Recorded clips:</p>
+            <p style={{ fontSize: "14px", marginBottom: "8px" }}>
+              Recorded clips:
+            </p>
             <ul>
               {audioURLs.map((url, idx) => (
                 <li key={idx}>Audio {idx + 1} ✔️</li>
@@ -196,12 +214,12 @@ const Register = ({ theme }) => {
           className="login-btn"
           onClick={handleSubmit}
           disabled={audioURLs.length < 3 || !isFormValid()}
-          style={{ marginTop: '20px' }}
+          style={{ marginTop: "20px" }}
         >
           Submit Registration
         </button>
 
-        <p style={{ marginTop: '15px', fontSize: '14px' , textAlign: 'center' }}>
+        <p style={{ marginTop: "15px", fontSize: "14px", textAlign: "center" }}>
           Already have an account? <a href="/Login">Login here</a>
         </p>
       </div>

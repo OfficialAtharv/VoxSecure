@@ -1,0 +1,34 @@
+/* Buttons */
+.login-btn {
+  width: 100%;
+  padding: 12px 0;
+  margin-bottom: 10px;
+  background-color: #4fc3f7;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #0288d1;
+}
+
+.login-btn:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Container for Start & Stop buttons in one row */
+.audio-controls {
+  display: flex;
+  gap: 10px; /* space between buttons */
+  margin-top: 10px;
+}
+
+.audio-controls button {
+  flex: 1; /* both buttons take equal width */
+}

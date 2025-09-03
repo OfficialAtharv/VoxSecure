@@ -1,3 +1,4 @@
+/* ================= PAGE LAYOUT ================= */
 .login-page {
   position: relative;
   width: 100vw;
@@ -18,6 +19,7 @@
   filter: brightness(0.4);
 }
 
+/* ================= TITLE ================= */
 .fancy-title {
   background: linear-gradient(90deg, #00e5ff, #8e2de2, #4a00e0);
   background-clip: text;
@@ -30,32 +32,26 @@
   text-align: center;
   animation: flicker 3s infinite, text-glow 2s ease-in-out infinite alternate;
 }
+
 @keyframes text-glow {
-  from {
-    text-shadow: 0 0 5px #00e5ff, 0 0 10px #00e5ff, 0 0 15px #8e2de2;
-  }
-  to {
-    text-shadow: 0 0 10px #4a00e0, 0 0 20px #8e2de2, 0 0 30px #00e5ff;
-  }
+  from { text-shadow: 0 0 5px #00e5ff, 0 0 10px #00e5ff, 0 0 15px #8e2de2; }
+  to { text-shadow: 0 0 10px #4a00e0, 0 0 20px #8e2de2, 0 0 30px #00e5ff; }
 }
+
 @keyframes flicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-    opacity: 1;
-  }
-  20%, 22%, 24%, 55% {
-    opacity: 0.4;
-  }
+  0%,19%,21%,23%,25%,54%,56%,100% { opacity: 1; }
+  20%,22%,24%,55% { opacity: 0.4; }
 }
 
-
+/* ================= LOGIN CARD ================= */
 .login-card {
   position: relative;
   z-index: 1;
   margin: auto;
   top: 50%;
   transform: translateY(-50%);
-  width: 400px;
-  padding: 2rem;
+  width: 450px; /* increased width */
+  padding: 2.5rem;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -63,19 +59,13 @@
   color: #fff;
 }
 
-.login-title {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 1.8rem;
-  font-weight: bold;
-}
-
+/* ================= INPUTS ================= */
 .input-group {
   display: flex;
   align-items: center;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 12px;
-  padding: 10px 15px;
+  padding: 12px 15px;
   margin-bottom: 15px;
 }
 
@@ -93,34 +83,12 @@ input {
   font-size: 1rem;
 }
 
-.login-btn {
-  width: 100%;
-  padding: 12px;
-  background-color: #4fc3f7;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.login-btn:hover {
-  background-color: #0288d1;
-}
-
-.register-link {
-  text-align: center;
-  margin-top: 15px;
-  color: #eee;
-}
-
-
+/* ================= PASSPHRASE ================= */
 .passphrase-section {
   background: rgba(255, 255, 255, 0.15);
   padding: 12px;
   border-radius: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   text-align: center;
 }
 
@@ -137,46 +105,67 @@ input {
   text-shadow: 0 0 6px #00e5ff;
 }
 
-.audio-controls {
+/* ================= AUDIO BUTTONS ================= */
+.controls-container {
   display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 15px;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px; /* space between buttons and login button */
+  margin-bottom: 20px;
 }
 
-.audio-preview {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 10px;
-  border-radius: 10px;
-  text-align: center;
-  color: #fff;
-}
-
-.audio-preview audio {
+.audio-controls-wrapper {
+  display: flex;
+  justify-content: center; /* center the buttons horizontally */
+  gap: 20px; /* spacing between Start/Stop buttons */
   width: 100%;
-  margin-top: 5px;
-}
-.custom-audio-controls {
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
 }
 
-.custom-audio-controls button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: #4fc3f7;
-  color: white;
+.icon-btn {
+  padding: 12px 18px;
+  border-radius: 50%;
   border: none;
-  border-radius: 10px;
+  background: rgba(255,255,255,0.2);
   cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
 }
 
-.custom-audio-controls button:hover {
-  background-color: #0288d1;
+.icon-btn:hover:not(:disabled) {
+  transform: scale(1.1);
+  background: rgba(255,255,255,0.3);
 }
 
-.audio-preview audio {
-  display: none; /* hide the native player completely */
+.icon-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
+/* ================= LOGIN BUTTON ================= */
+.main-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 25px;
+  border: none;
+  background: linear-gradient(90deg, #4caf50, #2e7d32);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.main-btn:hover:not(:disabled) {
+  transform: scale(1.03);
+  background: linear-gradient(90deg, #66bb6a, #388e3c);
+}
+
+.main-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ================= REGISTER LINK ================= */
+.register-link {
+  text-align: center;
+  margin-top: 15px;
+  color: #eee;
+}
