@@ -10,29 +10,57 @@ const Login = ({ theme }) => {
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [audioURL, setAudioURL] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
-  const [passphrase, setPassphrase] = useState(''); // ✅ passphrase state
+  const [passphrase, setPassphrase] = useState('');
+  const [language, setLanguage] = useState('english'); // ✅ Language state
 
   const audioChunksRef = useRef([]);
   const audioRef = useRef(null);
 
-  const passphrases = [
-    "Voice Unlock Access",
-    "Trust the Sound",
-    "Speak to Sign In",
-    "Authenticate Me",
-    "Vocal Identity Check",
-    "Let Me In",
-    "Verify My Voice",
-    "Sound is Key",
-    "Secure Entry Now",
-    "Log Me In Securely"
-  ];
+  const passphrases = {
+    english: [
+      "Voice Unlock Access",
+      "Trust the Sound",
+      "Speak to Sign In",
+      "Authenticate Me",
+      "Vocal Identity Check",
+      "Let Me In",
+      "Verify My Voice",
+      "Sound is Key",
+      "Secure Entry Now",
+      "Log Me In Securely"
+    ],
+    marathi: [
+      "माझा आवाज ओळखा",
+      "सुरक्षित प्रवेश द्या",
+      "माझ्या आवाजावर विश्वास ठेवा",
+      "बोलून साइन इन करा",
+      "माझी ओळख तपासा",
+      "आवाज म्हणजेच ओळख",
+      "माझा प्रवेश द्या",
+      "सुरक्षित लॉगिन करा",
+      "आवाजाने प्रमाणीकरण",
+      "माझ्या आवाजाने उघडा"
+    ],
+    hindi: [
+      "मेरी आवाज पहचानो",
+      "आवाज से लॉगिन करो",
+      "मुझे साइन इन करने दो",
+      "सुरक्षित प्रवेश दो",
+      "मेरी पहचान सत्यापित करो",
+      "आवाज है पहचान",
+      "लॉगिन की अनुमति दो",
+      "आवाज से प्रमाणित करो",
+      "सुरक्षित प्रवेश करें",
+      "मेरी आवाज से खोलो"
+    ],
+  };
 
-  // ✅ Generate passphrase only once on page load
+  // ✅ Update passphrase when language changes or page loads
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * passphrases.length);
-    setPassphrase(passphrases[randomIndex]);
-  }, []); // empty dependency array
+    const phrases = passphrases[language];
+    const randomIndex = Math.floor(Math.random() * phrases.length);
+    setPassphrase(phrases[randomIndex]);
+  }, [language]); // regenerate when language changes
 
   const startRecording = async () => {
     try {
@@ -88,7 +116,8 @@ const Login = ({ theme }) => {
 
       const formData = new FormData();
       formData.append("email", email);
-      formData.append("passphrase", passphrase);  // ✅ send fixed passphrase
+      formData.append("passphrase", passphrase);
+      formData.append("language", language); // ✅ send language info
       formData.append("recording", file);
 
       const res = await fetch("http://localhost:8000/login", { method: "POST", body: formData });
@@ -118,9 +147,23 @@ const Login = ({ theme }) => {
           />
         </div>
 
+        {/* ✅ Language selector */}
+        <div className="language-selector">
+          <label htmlFor="language">Choose Language:</label>
+          <select
+            id="language"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+          >
+            <option value="english">English</option>
+            <option value="marathi">Marathi</option>
+            <option value="hindi">Hindi</option>
+          </select>
+        </div>
+
         <div className="passphrase-section">
           <p className="passphrase-label">Please speak the following passphrase:</p>
-          <p className="passphrase-text">"{passphrase}"</p>  {/* ✅ fixed */}
+          <p className="passphrase-text">"{passphrase}"</p>
         </div>
 
         <div className="controls-container">
@@ -154,6 +197,7 @@ const Login = ({ theme }) => {
             Login
           </button>
         </div>
+
         <p className="register-link">
           Don’t have an account? <Link to="/Register">Register here</Link>
         </p>

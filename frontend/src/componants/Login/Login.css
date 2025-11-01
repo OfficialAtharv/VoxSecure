@@ -169,3 +169,34 @@ input {
   margin-top: 15px;
   color: #eee;
 }
+
+/* ================= LANGUAGE SELECTOR ================= */
+.language-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+.language-selector label {
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  color: #ddd;
+}
+
+.language-selector select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.language-selector select option {
+  color: #000; /* visible in dropdown */
+}

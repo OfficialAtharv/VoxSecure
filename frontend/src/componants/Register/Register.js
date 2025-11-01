@@ -9,13 +9,27 @@ const Register = ({ theme }) => {
   const [audioURLs, setAudioURLs] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [language, setLanguage] = useState("english"); // ✅ Language state
   const audioChunksRef = useRef([]);
 
-  const passphrases = [
-    "Voice is the key",
-    "Unlock with your voice",
-    "Secure voice identity",
-  ];
+  // ✅ Passphrases for all languages
+  const passphrases = {
+    english: [
+      "Voice is the key",
+      "Unlock with your voice",
+      "Secure voice identity",
+    ],
+    marathi: [
+      "आवाज म्हणजेच ओळख",
+      "तुमच्या आवाजाने उघडा",
+      "सुरक्षित आवाज ओळख",
+    ],
+    hindi: [
+      "आवाज है चाबी",
+      "अपनी आवाज से खोलो",
+      "सुरक्षित आवाज पहचान",
+    ],
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,9 +48,7 @@ const Register = ({ theme }) => {
 
   const startRecording = async () => {
     if (!isFormValid()) {
-      alert(
-        "Please fill out all fields with valid information before recording."
-      );
+      alert("Please fill out all fields with valid information before recording.");
       return;
     }
 
@@ -45,9 +57,7 @@ const Register = ({ theme }) => {
       const recorder = new MediaRecorder(stream);
 
       recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          audioChunksRef.current.push(e.data);
-        }
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
       };
 
       recorder.onstop = () => {
@@ -91,6 +101,7 @@ const Register = ({ theme }) => {
       formData.append("email", form.email);
       formData.append("name", form.name);
       formData.append("mobile", form.mobile);
+      formData.append("language", language); // ✅ include language info
 
       // Append audio files
       for (let i = 0; i < audioURLs.length; i++) {
@@ -167,17 +178,31 @@ const Register = ({ theme }) => {
           />
         </div>
 
+        {/* ✅ Language Selector */}
+        <div className="language-selector">
+          <label htmlFor="language">Choose Language:</label>
+          <select
+            id="language"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+          >
+            <option value="english">English</option>
+            <option value="marathi">Marathi</option>
+            <option value="hindi">Hindi</option>
+          </select>
+        </div>
+
         {audioURLs.length < 3 && (
           <>
             <div className="passphrase-section">
               <p className="passphrase-label">
-                Please speak the following passphrase ({audioURLs.length + 1}
-                /3):
+                Please speak the following passphrase ({audioURLs.length + 1}/3):
               </p>
               <p className="passphrase-text">
-                "{passphrases[audioURLs.length]}"
+                "{passphrases[language][audioURLs.length]}"
               </p>
             </div>
+
             <div className="audio-controls">
               <button
                 className="login-btn"
