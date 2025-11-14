@@ -2,9 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import './Login.css';
 import { Link } from 'react-router-dom';
 import { FaUser, FaMicrophone, FaStop } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import bgGif from '../../assets/bg.gif';
 
 const Login = ({ theme }) => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
@@ -107,29 +109,38 @@ const Login = ({ theme }) => {
   };
 
   const handleLogin = async () => {
-    if (!email) return alert("Please enter your email");
-    if (!audioURL) return alert("Please record your voice");
+  if (!email) return alert("Please enter your email");
+  if (!audioURL) return alert("Please record your voice");
 
-    try {
-      const blob = await (await fetch(audioURL)).blob();
-      const file = new File([blob], "login_audio.webm", { type: 'audio/webm' });
+  try {
+    const blob = await (await fetch(audioURL)).blob();
+    const file = new File([blob], "login_audio.webm", { type: 'audio/webm' });
 
-      const formData = new FormData();
-      formData.append("email", email);
-      formData.append("passphrase", passphrase);
-      formData.append("language", language); // ✅ send language info
-      formData.append("recording", file);
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("passphrase", passphrase);
+    formData.append("language", language);
+    formData.append("recording", file);
 
-      const res = await fetch("http://localhost:8000/login", { method: "POST", body: formData });
-      const data = await res.json();
+    const res = await fetch("http://localhost:8000/login", {
+      method: "POST",
+      body: formData
+    });
 
-      if (data.success) alert("Login Successful");
-      else alert("Login Failed: " + data.message);
-    } catch (err) {
-      console.error("Login error:", err);
-      alert("Error during login");
+    const data = await res.json();
+
+    if (data.success) {
+      alert("Login Successful 🎉");
+      localStorage.setItem("userEmail", email); // save email
+      navigate("/voice-command"); // redirect to voice command page ✅
+    } else {
+      alert("Login Failed: " + data.message);
     }
-  };
+  } catch (err) {
+    console.error("Login error:", err);
+    alert("Error during login");
+  }
+};
 
   return (
     <div className={`login-page ${theme}`}>

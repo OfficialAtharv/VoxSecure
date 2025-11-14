@@ -7,14 +7,14 @@ import bgGif from "../../assets/bg.gif";
 const About = () => {
   return (
     <div className="about-page">
-      {/* Animated Background */}
+     
       <div
         className="about-background"
         style={{ backgroundImage: `url(${bgGif})` }}
       ></div>
 
       <div className="about-content">
-        {/* Title Section */}
+      
         <motion.h1
           className="about-title fancy-title"
           initial={{ opacity: 0, y: -50 }}
@@ -24,7 +24,7 @@ const About = () => {
           About VoxSecure
         </motion.h1>
 
-        {/* Description */}
+        
         <motion.p
           className="about-description"
           initial={{ opacity: 0 }}
@@ -38,7 +38,7 @@ const About = () => {
           just **you**.
         </motion.p>
 
-        {/* Features Section */}
+        
         <div className="about-features">
           <motion.div
             className="feature-card"
@@ -93,7 +93,7 @@ const About = () => {
           </motion.div>
         </div>
 
-        {/* Closing Message */}
+       
         <motion.p
           className="about-tagline"
           initial={{ opacity: 0, y: 30 }}

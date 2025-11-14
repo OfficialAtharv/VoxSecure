@@ -1,0 +1,44 @@
+.voice-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0a0a0a, #1f1f1f);
+  color: #fff;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+}
+
+.welcome-text {
+  font-size: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.hint-text {
+  margin-top: 1rem;
+  color: #aaa;
+}
+
+.voice-btn {
+  margin-top: 2rem;
+  padding: 12px 30px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 12px;
+  background: #6c63ff;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.voice-btn:hover {
+  background: #8a85ff;
+  transform: scale(1.05);
+}
+
+.recognized {
+  margin-top: 2rem;
+  font-style: italic;
+  color: #00ff99;
+}

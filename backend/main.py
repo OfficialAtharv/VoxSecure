@@ -126,15 +126,23 @@ async def register_user(
         tb = traceback.format_exc()
         print(f"[ERROR] Registration failed:\n{tb}")
         return JSONResponse({"success": False, "message": f"Registration failed: {str(e)}"})
-
 # ----------------- Login -----------------
 @app.post("/login")
 async def login_user(
     email: str = Form(...),
     passphrase: str = Form(...),
-    recording: UploadFile = File(...)
+    recording: UploadFile = File(...),
 ):
-    safe_email = email.replace('@', '_').replace('.', '_')
+    from difflib import SequenceMatcher
+    import soundfile as sf
+
+    def normalize_audio(file_path):
+        """Normalize audio loudness for consistency."""
+        y, sr = librosa.load(file_path, sr=16000)
+        y = librosa.util.normalize(y)
+        sf.write(file_path, y, sr)
+
+    safe_email = email.replace("@", "_").replace(".", "_")
     webm_path = os.path.join(UPLOAD_DIR, f"{safe_email}_login.webm")
     wav_path = os.path.join(UPLOAD_DIR, f"{safe_email}_login.wav")
 
@@ -145,65 +153,77 @@ async def login_user(
         "similarity": None,
         "similarities": [],
         "transcribed_text": None,
-        "message": None
+        "message": None,
     }
 
     try:
+        # Save uploaded audio
         with open(webm_path, "wb") as buffer:
             shutil.copyfileobj(recording.file, buffer)
 
+        # Convert and normalize audio
         convert_webm_to_wav(webm_path, wav_path)
+        normalize_audio(wav_path)
+
+        # Extract embedding for login audio
         login_embedding = extract_speaker_embedding(wav_path)
 
+        # Fetch user
         user = await users_collection.find_one({"email": email})
         if not user:
             login_attempt["message"] = "User not found"
             await login_attempts_collection.insert_one(login_attempt)
             return JSONResponse({"success": False, "message": "User not found"})
 
-        threshold = 0.35
-        matched = False
-        best_similarity = 0
+        # ---------------- Similarity Calculation ----------------
+        threshold = 0.35  # relaxed threshold for more realistic accuracy
         similarities = []
 
         for db_emb in user.get("embeddings", []):
             db_emb = np.array(db_emb)
-            similarity = 1 - cosine(login_embedding, db_emb)
-            similarities.append(similarity)
-            best_similarity = max(best_similarity, similarity)
-            if similarity > threshold:
-                matched = True
+            sim = 1 - cosine(login_embedding, db_emb)
+            similarities.append(sim)
+
+        avg_similarity = float(np.mean(similarities))
+        best_similarity = float(np.max(similarities))
+        print(f"[DEBUG] {email} | AvgSim={avg_similarity:.3f} | BestSim={best_similarity:.3f}")
 
         login_attempt["similarity"] = best_similarity
         login_attempt["similarities"] = similarities
-        print(f"[DEBUG] Similarities for {email}: {similarities}")
 
-        if not matched:
-            login_attempt["message"] = "Voice not recognized"
+        if avg_similarity < threshold:
+            login_attempt["message"] = f"Voice not recognized (avg={avg_similarity:.2f})"
             await login_attempts_collection.insert_one(login_attempt)
             return JSONResponse({
                 "success": False,
-                "message": "Voice not recognized",
-                "similarities": similarities
+                "message": "Voice not recognized. Try speaking clearly.",
+                "similarities": similarities,
             })
 
+        # ---------------- Passphrase Verification ----------------
         result = whisper_model.transcribe(wav_path, fp16=False)
         spoken_text = result["text"].strip().lower()
         login_attempt["transcribed_text"] = spoken_text
 
-        if not re.search(rf"\b{re.escape(passphrase.lower())}\b", spoken_text):
-            login_attempt["message"] = "Passphrase mismatch"
+        ratio = SequenceMatcher(None, passphrase.lower(), spoken_text).ratio()
+        print(f"[DEBUG] Passphrase match ratio: {ratio:.2f} | Spoken: {spoken_text}")
+
+        if ratio < 0.7:
+            login_attempt["message"] = f"Passphrase mismatch ({ratio:.2f})"
             await login_attempts_collection.insert_one(login_attempt)
             return JSONResponse({
                 "success": False,
-                "message": "Passphrase mismatch",
+                "message": f"Passphrase mismatch. Heard: '{spoken_text}'",
                 "spoken": spoken_text,
-                "similarities": similarities
+                "similarities": similarities,
             })
 
+        # ---------------- Success ----------------
         login_attempt["success"] = True
         login_attempt["message"] = "Login successful"
         await login_attempts_collection.insert_one(login_attempt)
+
+        print(f"[INFO] ✅ Login Success for {email} | AvgSim={avg_similarity:.3f} | Phrase={ratio:.2f}")
         return JSONResponse({"success": True, "message": "Login successful"})
 
     except Exception as e:
@@ -216,3 +236,4 @@ async def login_user(
     finally:
         for f in [webm_path, wav_path]:
             safe_remove(f)
+

@@ -7,7 +7,7 @@ import Products from './componants/Products/Products';
 import About from './componants/About/About';
 import Contact from './componants/Contact/Contact';
 import Register from './componants/Register/Register';
-
+import VoiceCommand from './componants/VoiceCommand';
 const App = () => {
   const [theme, setTheme] = useState('light');
 
@@ -22,6 +22,8 @@ const App = () => {
           <Route path="/contact" element={<Contact theme={theme} />} />
            <Route path="/Login" element={<Login theme={theme} />} />
            <Route path="/Register" element={<Register theme={theme} />} />
+           <Route path ="/voice-command" element={<VoiceCommand theme={theme} />} />
+           
         </Routes>
       </BrowserRouter>
     </div>
